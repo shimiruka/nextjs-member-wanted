@@ -36,3 +36,28 @@ export async function getPostsByTagId(tagIg: string) {
     throw new Error('Failed to fetch post data.');
   }
 }
+
+export async function getFilteredPosts(query: string) {
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: query,
+            },
+          },
+          {
+            description: {
+              contains: query,
+            },
+          },
+        ],
+      },
+    });
+    return posts;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch post data.');
+  }
+}

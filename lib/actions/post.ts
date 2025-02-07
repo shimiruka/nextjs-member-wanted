@@ -7,8 +7,8 @@ const PostSchema = z.object({
   id: z.string().uuid(),
   title: z.string(),
   description: z.string(),
-  isPermanent: z.boolean(),
-  userId: z.string().uuid(),
+  isPermanent: z.boolean().nullish(),
+  userId: z.string().uuid().nullish(),
 });
 
 const CreatePost = PostSchema.omit({ id: true });
@@ -25,7 +25,7 @@ export type State = {
   message?: string | null;
 };
 
-export async function createPost(prevState: State, formData: FormData) {
+export async function createPost(prevState: State, formData: FormData): Promise<State> {
   const validatedFields = CreatePost.safeParse({
     title: formData.get('title'),
     description: formData.get('description'),
@@ -47,8 +47,8 @@ export async function createPost(prevState: State, formData: FormData) {
       data: {
         title,
         description,
-        isPermanent,
-        userId,
+        // isPermanent,
+        // userId,
       },
     });
   } catch (error) {
@@ -57,6 +57,7 @@ export async function createPost(prevState: State, formData: FormData) {
       message: 'Database Error: Failed to Create Post.',
     };
   }
+  return {};
 }
 
 export async function updatePost(prevState: State, formData: FormData) {
